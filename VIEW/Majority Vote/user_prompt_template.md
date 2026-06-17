@@ -24,11 +24,11 @@ Why does config2 suffer a Periodic IPC regression relative to config1?
    - source/config evidence
    - proposed fix
 4) For proposed fixes, vote semantically on the concrete action, not on generic wording. Examples:
-   - "fix FDIP off-path/Bloom training" and "classify candidates by actual off-path state when confidence is disabled" are the same fix group if they target the same code path.
-   - "increase stream_buffer_n", "increase stream-prefetch capacity", and "larger stream prefetcher structures" are the same structural-fallback group.
-   - "disable adaptive throttling" and "change feedback to not downshift late/low-pollution streams" are related but should be separate groups unless the replicas clearly propose the same mechanism.
+   - "fix the component update path" and "use the same state predicate at update and lookup time" are the same fix group if they target the same code path.
+   - "increase buffer entries", "increase queue capacity", and "larger component structure" are the same structural-fallback group.
+   - "disable policy feedback" and "change the feedback rule to avoid downshifting useful requests" are related but should be separate groups unless the replicas clearly propose the same mechanism.
 5) Select the winning group using this rule: if a group appears in at least 3 reports, it wins. Otherwise, choose the unique highest-occurring group if it appears at least 2 times. If no group appears at least 2 times, or if there is a tie for the highest-occurring group, mark that vote as inconclusive.
-6) Do not reward a claim merely for being more verbose. Prefer the claim repeated by more replicas. Use source/counter evidence only to break ties or identify malformed outputs.
+6) Do not reward a claim merely for being more verbose. Prefer the claim repeated by more replicas. Use source/counter evidence only to identify malformed outputs; do not use evidence strength to override the vote-count rule or resolve tied vote counts.
 7) If the direct cause has a majority but the fix does not, say so. Do not invent a majority fix.
 8) If a replica proposes both a primary zero-storage source/config fix and a structural fallback, count both groups, but identify which one that replica labels as primary.
 

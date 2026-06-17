@@ -6,7 +6,7 @@ Simulator cache naming conventions (MUST FOLLOW):
 - ICACHE = L1-I
 - DCACHE = L1-D
 - MLC = L2
-- L1 (when used alone, e.g., "L1_*" counters) = LLC
+- L1 = LLC
 
 Your job is to read the blob and produce ONE of the following outcomes:
 
@@ -16,17 +16,18 @@ Choose this when the evidence indicates the regression is dominated by a specifi
 - A clear increase in structure-attributable penalty, such as higher miss frequency / miss rate / effective latency explicitly attributed to that structure (e.g., "data-cache load misses increased", "last-level-cache latency increased").
 
 IMPORTANT PRECEDENCE RULE (MUST FOLLOW):
-- If the blob explicitly identifies an algorithmic/tuning subcomponent as the direct cause (e.g., a prefetcher being late/incorrect, a predictor losing accuracy, a policy change), then you MUST choose outcome B (EXAMINE_COMPONENT) instead of STRUCTURAL, even if the downstream effect is increased misses/latency.
+- If the blob explicitly attributes the direct cause to a component policy, implementation behavior, algorithmic behavior, or configuration interaction rather than a structure-level capacity/latency limit, then you MUST choose outcome B (EXAMINE_COMPONENT) instead of STRUCTURAL, even if the downstream effect is increased misses/latency.
 
 Requirements if you choose STRUCTURAL:
 - You MUST clearly name the specific structure that is the bottleneck (use the most precise name supported by the blob; if the blob names a cache level, name that cache level).
 - Do NOT propose a fix; only identify the bottlenecked structure.
-
-IMPORTANT CONSTRAINT (MUST FOLLOW):
-- You MUST NOT label the bottleneck as STRUCTURAL if the structure is the functional units. If the evidence points there, you must instead choose outcome B (EXAMINE_COMPONENT) and direct the user to inspect the relevant component's source code.
+- A STRUCTURAL outcome is valid only when the implied intervention is a size modification to an existing mutable structure, such as caches, predictors, buffers, queues, registers, load-store queue, reorder buffer, branch target buffer, or widths.
+- Do NOT choose STRUCTURAL if the implied remedy would require modifying reservation-station count, functional-unit count, instruction-to-reservation-station mapping, instruction-to-functional-unit mapping, reservation-station-to-functional-unit mapping, or latency/throughput of individual units or instruction types.
+- Do NOT choose STRUCTURAL if the implied remedy would require adding a new component or adding a new feature within an existing component.
+- If the evidence points to immutable structural resources or their mappings, choose EXAMINE_COMPONENT and route to the closest matching component option.
 
 B) EXAMINE_COMPONENT (source-code / algorithm issue)
-Choose this when the evidence does NOT justify a STRUCTURAL outcome (per the precedence rule above) and instead points to behavior consistent with an implementation/algorithm change in a microarchitectural component (e.g., worse predictor accuracy, worse prefetch timeliness, poorer policy decisions).
+Choose this when the evidence does NOT justify a STRUCTURAL outcome (per the precedence rule above) and instead points to behavior consistent with an implementation, algorithm, policy, or configuration interaction in a microarchitectural component.
 
 Requirements if you choose EXAMINE_COMPONENT:
 - Output which ONE component option (from the provided option list in the user prompt) should have its source code examined for likely algorithm/implementation issues causing the regression.
@@ -34,6 +35,7 @@ Requirements if you choose EXAMINE_COMPONENT:
 
 Hard rules:
 - Use ONLY the provided majority-vote text + standard computer architecture knowledge.
+- If component-specific routing constraints or simulator conventions are provided by the user prompt, follow them exactly.
 - Do NOT walk upstream beyond what the majority-vote analysis identifies as the final/direct cause; treat that as the anchor.
 - If the evidence is ambiguous, contradictory, missing, or does not justify a single outcome, return MODEL_FAILED.
 

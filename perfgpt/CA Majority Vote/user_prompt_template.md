@@ -30,14 +30,10 @@ Then aggregate across the 5 reports using these rules:
 - Normalize synonymous phrasings into one concise theme.
 - If one theme is just a downstream restatement of another, prefer the more fundamental bug theme.
 - If no direct-cause theme reaches the decision rule above, say there is no clear majority direct cause.
-- Normalize active-path representation and bounded-state defects carefully:
-  - Phrasings about the selected key/representation being too raw, too narrow, too aliased, insufficiently transformed, or otherwise inconsistent with its later lookup/update use are one active-path representation theme when they describe the same variable and mechanism.
-  - Do not rename an active-path representation defect as "missing support for an alternative mode" merely because that alternative is proposed as the fix.
-  - Keep "unrelated instances collide/alias together" separate from "related instances do not share enough history / mostly one-off keys" unless the reports explicitly prove they are the same mechanism.
-- Normalize active-path provenance and recovery defects carefully:
-  - Phrasings about persistent predictor/policy/recovery state being updated by wrong-provenance events are one theme only when they refer to the same mutation site, state variable, and later consumer.
-  - Keep wrong-provenance training/table updates separate from wrong-provenance latch/flag/recovery-marker updates unless the reports prove they are the same mechanism.
-  - Keep missing rollback/recovery of persistent state separate from the ungated mutation that creates the bad state unless the reports explicitly treat them as one inseparable bug.
+- Normalize active-path mechanism defects carefully:
+  - Treat wording variants as one theme only when the reports clearly refer to the same code path, state/resource/policy object, decision or mutation site, and later consumer.
+  - Keep distinct mechanisms separate unless the reports explicitly prove they are the same issue.
+  - Do not rename an active-path defect into a proposed alternative design merely because that alternative is suggested as the fix.
 
 Return output in EXACTLY this format:
 
@@ -90,13 +86,13 @@ Return output in EXACTLY this format:
   - Theme: ...
   - Support: <count>/5
   - Short summary: ...
-- If a retained additional-bug theme lost the direct-cause vote but still appears as a guaranteed bug in at least 2 reports, keep it here rather than moving it to Minority / Rejected Notes.
+- If a retained additional-bug theme lost the direct-cause vote but still appears as a guaranteed bug in at least 2 reports, keep it here rather than moving it to Minority / Rejected Themes.
 - If none qualify, write: "None retained by consensus."
 
 8) Final Improvement Lever
 - <winning lever> OR "No clear majority improvement lever"
 
-9) Minority / Rejected Notes
+9) Minority / Rejected Themes
 - Briefly note any recurring but non-retained themes that appeared but did not meet threshold.
 - Do NOT place a theme here if it qualified for retention under section (7).
 

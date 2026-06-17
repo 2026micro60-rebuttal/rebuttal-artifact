@@ -51,7 +51,7 @@ The following navigation guides are provided. Use the function summaries to choo
 ---
 
 ## (E) Additional mapped context (MANDATORY IF APPLICABLE)
-Use this section for component-specific mapped context such as functional-unit mappings, dispatch tables, policy mappings, parameter tables, or other configuration/source context needed to reason about the component.
+Use this section for component-specific mapped context needed to interpret the supplied source/configuration, such as dispatch tables, policy mappings, parameter tables, resource mappings, state definitions, or other architecture/source relationships.
 
 <<<ADDITIONAL_CONTEXT_BEGIN>>>
 {{ADDITIONAL_MAPPED_CONTEXT}}
@@ -73,25 +73,16 @@ You MUST:
 1) Identify the counters whose semantics indicate the routed behavior for COMPONENT_UNDER_TEST, including any must-explain symptoms from the aligned causal narrative.
 2) Use the navigation guide to locate the relevant code paths that implement, trigger, or expose the routed behavior, including detailed internals of COMPONENT_UNDER_TEST.
 3) Identify only GUARANTEED functional source-code bugs or GUARANTEED code+config interaction bugs in the relevant code paths.
-4) When reasoning about supplied architecture mappings, scheduling decisions, resource contention, and rejection behavior, strictly adhere to the mapped context in Section (E).
+4) When reasoning about component-specific mappings or semantics supplied in Section (E), strictly adhere to that mapped context.
 5) Distinguish:
    - guaranteed issues causing the routed regression, versus
    - additional guaranteed bugs in COMPONENT_UNDER_TEST that should still be reported because this component is modified in config2.
 6) Explicitly reject tempting but unproven findings (for example, random assertions or conditionals that are not themselves provable functional defects under the supplied artifacts).
 
-Important stateful-mechanism guidance:
-- If a guaranteed bug exists in COMPONENT_UNDER_TEST even when it is not the dominant direct cause in this simpoint, still report it because COMPONENT_UNDER_TEST is modified in config2.
-- For every predictor, classifier, policy table, history table, latch, recovery flag, age counter, or keyed metadata structure in the active config2 path, trace the persistent-state lifecycle: source event -> state lookup/key -> mutation -> later consumer -> recovery/rollback/clear behavior.
-- For every persistent-state mutation, state the dynamic provenance of the triggering event if available from code: on-path, off-path/speculative, committed/retired, squashed, recovery/EOM, or unknown. Also state the exact gating condition.
-- For any selected key/signature/indexing mode, trace the exact representation used for lookup/update, including whether the code transforms, narrows, hashes, masks, folds, or compresses the source field before use.
-- For each selected signature/key, state two separate granularity consequences:
-  1) collision/aliasing: whether unrelated instances can map to the same key;
-  2) sharing/cardinality: whether related instances share history, or whether the key is so instance-specific that most entries are one-off and cannot accumulate useful evidence before later decisions.
-  Treat insufficient history sharing as its own candidate active-path defect; do not collapse it into collision/truncation analysis or into a missing alternative-mode improvement.
-- For delayed side effects such as latches, flags, or recovery markers, prove that the later consumer still corresponds to the original event and cannot consume stale or wrong-provenance state after recovery.
-- Keep active-path defects separate from missing/inactive alternative modes. Do not report an inactive mode as causal merely because it would be a plausible improvement.
-- Do not report counter or age overflow unless you prove a reachable active path from valid initialized state to an out-of-range value; otherwise list it under rejected non-bugs / non-guaranteed suspicions.
-- For stale-state or missing-reset claims, trace all writes to the field on the active path and state the value observed at the next read. If the suspicious write is overwritten before any next read, reject it as non-causal.
+Component-specific context rule:
+- If a guaranteed issue exists in COMPONENT_UNDER_TEST even when it is not the dominant direct cause in this simpoint, still report it because COMPONENT_UNDER_TEST is modified in config2.
+- Use any mappings or semantics in Section (E) only to interpret active code paths and validate claims.
+- Do not infer defects solely from the presence of mapped context; every reported issue must be proved from supplied source/config/counter evidence.
 
 Required output format:
 
@@ -104,19 +95,14 @@ Required output format:
 
 ### 3) Relevant code paths
 - List the key functions/files and why each is relevant.
-- For every stateful predictor/policy/recovery path, include:
+- For each relevant code path or component mechanism, include when applicable:
   - Active path:
-  - Persistent state mutated:
-  - Mutation site:
-  - Triggering event provenance:
-  - Gating condition:
-  - Key/signature/index source, if any:
-  - Transform before lookup, if any:
-  - Collision/aliasing consequence, if any:
-  - Sharing/cardinality consequence, if any:
-  - Later consumer:
-  - Recovery/rollback/clear behavior:
-- For any reported counter/range overflow or stale-state issue, include the reachable-path proof. If the proof depends on an overwritten write, missing type information, or an illegal starting state, reject the issue instead.
+  - Relevant state/resource/policy object:
+  - Decision or mutation site:
+  - Triggering event or gating condition:
+  - Later consumer or downstream effect:
+  - Recovery, rollback, clear, or reset behavior:
+- For every reported issue, include the reachable active-path proof.
 
 ### 4) Guaranteed issues causing the routed regression
 For each issue:

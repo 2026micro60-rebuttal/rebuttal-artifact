@@ -2,7 +2,7 @@ This was a **Comp Arch** exercise. I am attaching **5 files**, each containing o
 
 Your task: read the **five attached responses**, treat them as Attempt 1-5 (use filename/attachment-order mapping per system instructions), then perform **theme extraction + majority vote** and output the final **direct cause** and an **aligned causal narrative**.
 
-### Special Notes (MANDATORY)
+### Simulator cache naming conventions (MANDATORY)
 In this simulator: ICACHE = L1-I, DCACHE = L1-D, MLC = L2, and L1 = LLC.
 
 ### Input note (MANDATORY)

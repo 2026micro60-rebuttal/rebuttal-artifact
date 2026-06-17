@@ -47,7 +47,7 @@ IMPORTANT (MANDATORY):
 You may label A -> B ONLY if EITHER the counter summaries OR standard microarchitectural reasoning not inconsistent with those summaries justify that directionality.
 Summary cues that can justify A -> B include phrases like:
 - "blocked by ...", "stalled due to ...", "waiting for ...", "denied because ...", "buffer full ...", "requests rejected by ..."
-- "could have been avoided if ...", "late prefetch ...", "bandwidth limited ..."
+- "could have been avoided if ...", "late request ...", "bandwidth limited ..."
 If summaries OR microarchitectural reasoning not inconsistent with the summaries do not justify directionality, you MUST label "No causal chain" (even if correlated).
 
 ---

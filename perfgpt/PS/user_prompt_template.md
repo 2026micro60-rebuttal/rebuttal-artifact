@@ -24,7 +24,7 @@ Using python:
 Using python, standard Comp Arch knowledge, the counter summaries and most importantly, the soft heuristics below:
 - Select exactly 20 counters that can best help explain the IPC regression.
 - Use a soft heuristic based on keyword substring matching in counter names (and sometimes in summaries), such as:
-  - "queue full ...", "cache miss ...", "FU busy ...", "rejected ...", "pref late ...", "pref access ...", "pref sent ...", "denied ...", "stall ...", "starve ...", "blocked ...", "mispredicted ..."
+  - "queue full ...", "cache miss ...", "FU busy ...", "rejected ...", "pref late ...", "denied ...", "stall ...", "starve ...", "blocked ...", "mispredicted ..."
 - You MUST use the 1-line summary to interpret counter semantics; do not assume meanings from counter names alone.
 
 Selection requirements (MANDATORY):

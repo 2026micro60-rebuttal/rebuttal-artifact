@@ -11,26 +11,26 @@ Study the majority-vote response and do ONE of the following:
 - ICACHE = L1-I
 - DCACHE = L1-D
 - MLC = L2
-- L1 (when used alone, e.g., "L1_*" counters) = LLC
-
-### Simulator/component routing notes (optional)
-{{SIMULATOR_COMPONENT_ROUTING_NOTES}}
+- L1 = LLC
 
 ### Allowed component options
 {{ALLOWED_COMPONENT_OPTIONS}}
 
 ### Required method (MANDATORY)
 1) Read the majority-vote response carefully.
-2) Identify what it claims is the direct cause and the main supporting evidence (counters, occupancy/saturation language, miss-rate/latency changes, explicit "late/incorrect" algorithmic language, backpressure, etc.).
+2) Identify what it claims is the direct cause and the main supporting evidence (counters, occupancy/saturation language, miss-rate/latency changes, component-policy or implementation language, backpressure, etc.).
 3) Decide whether the direct cause is STRUCTURAL (structure-dominated):
    - Output decision=STRUCTURAL when the blob makes the regression primarily about a named structure, including:
      a) capacity/limit saturation (e.g., "ROB full" or "MSHR full"), OR
      b) a clear increase in structure-attributable penalty (e.g., increased data-cache miss frequency, increased last-level-cache latency).
-   - IMPORTANT PRECEDENCE RULE: if the blob explicitly identifies an algorithmic/tuning subcomponent as the direct cause (e.g., "prefetch is late", "predictor accuracy dropped", "policy change"), then you MUST output decision=EXAMINE_COMPONENT (or EXAMINE_COMPONENT_NOT_IN_OPTIONS) rather than STRUCTURAL, even if the downstream effect is increased misses/latency.
+   - IMPORTANT PRECEDENCE RULE: if the blob explicitly attributes the direct cause to a component policy, implementation behavior, algorithmic behavior, or configuration interaction rather than a structure-level capacity/latency limit, then you MUST output decision=EXAMINE_COMPONENT (or EXAMINE_COMPONENT_NOT_IN_OPTIONS) rather than STRUCTURAL, even if the downstream effect is increased misses/latency.
+   - A STRUCTURAL outcome is valid only when the implied intervention is a size modification to an existing mutable structure, such as caches, predictors, buffers, queues, registers, load-store queue, reorder buffer, branch target buffer, or widths.
+   - Do NOT output decision=STRUCTURAL if the implied remedy would require modifying reservation-station count, functional-unit count, instruction-to-reservation-station mapping, instruction-to-functional-unit mapping, reservation-station-to-functional-unit mapping, or latency/throughput of individual units or instruction types.
+   - Do NOT output decision=STRUCTURAL if the implied remedy would require adding a new component or adding a new feature within an existing component.
 4) If decision=EXAMINE_COMPONENT:
    - Choose the ONE best-matching component option whose source code should be examined.
-5) If the best-matching component is not in the option list: output decision=EXAMINE_COMPONENT_NOT_IN_OPTIONS and name the missing component.
-6) Constraint: You MUST NOT output decision=STRUCTURAL for functional units. If the evidence points to those, choose decision=EXAMINE_COMPONENT and pick the closest matching component option.
+5) If the evidence points to immutable structural resources or their mappings, choose EXAMINE_COMPONENT and route to the closest matching component option.
+6) If the best-matching component is not in the option list: output decision=EXAMINE_COMPONENT_NOT_IN_OPTIONS and name the missing component.
 7) Only choose an outcome if the majority-vote response provides enough justification; otherwise output MODEL_FAILED.
 
 ### Output format (MANDATORY)

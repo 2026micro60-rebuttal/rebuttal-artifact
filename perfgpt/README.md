@@ -5,9 +5,8 @@ Reusable prompt templates for the PerfGPT staged workflow.
 ## Stage Mapping
 
 - `PS/`: PMU Selection.
-- `CEA/`: Cause-Effect Analysis.
+- `CEA/`: Cause-Effect Analysis and post-CEA structural/component routing.
 - `Majority Vote/`: CEA majority vote.
-- `CA/component_routing_*`: structural v/s code-analysis routing.
 - `CA/code_analysis_*`: source-code analysis.
 - `CA Majority Vote/`: code-analysis majority vote.
 
@@ -20,6 +19,7 @@ Run-specific inputs are written as `{{PLACEHOLDER_NAME}}`. Examples include:
 - `{{SELECTED_COUNTERS_TOP20_CSV_ORDER}}`
 - `{{CHANGED_COMPONENTS_CONTEXT}}`
 - `{{CEA_MAJORITY_VOTE_RESPONSE}}`
+- `{{ALLOWED_COMPONENT_OPTIONS}}`
 - `{{ROOT_CAUSE_BEHAVIOR}}`
 - `{{ALIGNED_CAUSAL_NARRATIVE}}`
 - `{{MAPPED_CONFIGURATION_CONTEXT}}`

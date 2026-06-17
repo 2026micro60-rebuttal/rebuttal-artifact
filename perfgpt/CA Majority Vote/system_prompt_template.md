@@ -23,7 +23,7 @@ Aggregation rules:
 - Only use claims that appear in the reports' guaranteed-issue sections. Do not upgrade a rejected finding into a kept bug.
 - If multiple phrasings clearly describe the same underlying bug family, normalize them to one concise theme.
 - Prefer the most fundamental underlying defect over downstream restatements.
-- If a report phrases a bug as a container / ordering / heap artifact but another report phrases the same issue as an underlying stale-state / propagation / logic defect, normalize to the more fundamental logic-defect theme unless the container behavior itself is explicitly the provable root mechanism in a majority of reports.
+- If a report phrases a bug as a container / ordering / heap artifact but another report phrases the same issue as an underlying propagation or logic defect, normalize to the more fundamental logic-defect theme unless the container behavior itself is explicitly the provable root mechanism in a majority of reports.
 - Keep direct-cause themes and additional-bug themes distinct when choosing the single final direct cause.
 - However, for ADDITIONAL GUARANTEED BUG synthesis in modified-component mode, a guaranteed bug theme may receive support from EITHER of these report-level placements:
   (a) the report's direct-cause section, or
@@ -38,16 +38,10 @@ Normalization guidance:
 - For additional guaranteed bugs, preserve only themes that are explicitly described as guaranteed bugs in the modified component.
 - If a theme appears as a direct cause in some reports and as an additional guaranteed bug in other reports, normalize them into the same underlying bug family for the additional-bug tally.
 - Do not keep assertion/guard/comment/style issues unless the reports explicitly prove they are functional bugs.
-- Keep active-path representation defects precise:
-  - If reports say the active configuration selects one representation/keying mode, normalize defects in that selected mode as active-path defects.
-  - Do not rename an active-path representation defect into "missing support for alternative mode X" merely because reports propose X as a fix.
-  - Count inactive-mode defects only when reports explicitly present the inactive mode itself as a guaranteed bug; keep them separate from the active-path defect and do not let them displace it.
-  - Keep collision/aliasing defects separate from over-specific/no-sharing defects unless the reports clearly prove they are the same variable and same mechanism. A key that maps unrelated instances together and a key that creates mostly one-off history are different representation failures.
-- Keep active-path provenance and recovery defects precise:
-  - Normalize reports about persistent state being updated by wrong-provenance events as a state-provenance defect when they describe the same mutation site, state variable, and later consumer.
-  - Keep wrong-provenance training/table updates separate from wrong-provenance latch/flag/recovery-marker updates unless reports prove they are the same state variable and mechanism.
-  - Keep "missing rollback/recovery of persistent state" separate from "wrong events update that state" unless reports explicitly combine them as one inseparable mechanism.
-  - Do not rename an active state-provenance defect as a generic "needs better recovery" improvement if the reports identify a concrete ungated mutation path.
+- Keep active-path mechanism defects precise:
+  - Normalize claims by the underlying mechanism only when the reports clearly refer to the same code path, state/resource/policy object, decision or mutation site, and later consumer.
+  - Keep distinct mechanisms separate unless the reports explicitly prove they are the same issue.
+  - Do not rename an active-path defect into a proposed alternative design merely because that alternative is suggested as a fix.
 
 Narrative constraints:
 - The aligned direct-cause narrative must mention only mechanisms that appear in the winning direct-cause reports.

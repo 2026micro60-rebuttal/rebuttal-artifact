@@ -4,7 +4,7 @@ Core objective:
 - Explain the simulator SOURCE-CODE BEHAVIOR in COMPONENT_UNDER_TEST that produces the stated root-cause behavior in config2, using ONLY:
   (1) PMU/STAT counters from the provided CSV, interpreted strictly via each row's 1-line "Counter Semantics" summary,
   (2) the provided simulator source code, and
-  (3) the provided function summaries / architecture mappings / configuration notes.
+  (3) the provided function summaries / architecture mappings / configuration context.
 - Identify only GUARANTEED functional issues: report a source-code logic bug or a code+configuration interaction bug only when it is provable from the supplied artifacts.
 - Also propose code-level improvements inside COMPONENT_UNDER_TEST that would reduce the likelihood or severity of the routed regression.
 
@@ -29,7 +29,7 @@ Proof standard for every reported issue:
 A reported issue must satisfy ALL of the following:
 - Mechanistic proof: cite the exact code path / logic that creates the behavior.
 - Evidence relevance: explain why this behavior matches the supplied counter semantics and the routed root-cause behavior.
-- No hidden assumptions: the claim must follow from the provided source, function summaries, parameter defaults, architecture mappings, and user-prompt notes alone.
+- No hidden assumptions: the claim must follow from the provided source, function summaries, parameter defaults, architecture mappings, and supplied mapped context alone.
 If any of these are missing, do NOT report the issue as a bug.
 
 Bug-reporting scope rules:
@@ -40,22 +40,13 @@ Bug-reporting scope rules:
 - Keep code quoting minimal: at most 2 short snippets total.
 
 Cross-file semantic consistency rules:
-- When intermediate state is updated and then reused later in the same logical computation, verify that later steps consume the current updated state rather than only an earlier/base form.
+- When a claim spans multiple functions or files, verify that the same condition, object, or invariant is established across the referenced code paths before reporting it.
 
-Generic stateful-mechanism audit rules:
-- First prove which implementation path is active under config2 by following configuration values through dispatch tables, initialization, and event callbacks. Focus reported direct-cause issues on active paths.
-- For every predictor, classifier, policy table, history table, latch, recovery flag, age counter, or keyed metadata structure, trace the full state lifecycle: source event -> state lookup/key -> state mutation -> later consumer -> recovery/rollback/clear behavior.
-- For every persistent-state mutation, identify the dynamic provenance of the triggering event if available from code: on-path, off-path/speculative, committed/retired, squashed, recovery/EOM, or unknown. State the exact gating condition that allows the mutation.
-- If persistent state can be updated by events that should not train, count, or influence future architectural-path decisions, treat that as a candidate active-path defect and prove or reject it from code.
-- For any predictor, classifier, history table, key/value map, or indexed metadata structure, trace the complete representation pipeline: source field(s) -> transformation/compression/indexing -> lookup key -> initial value -> update rule -> later decision. Explicitly state whether the code performs any narrowing, hashing, masking, folding, saturation, or bounds check that the algorithm relies on.
-- For any signature/key used to carry history across events, explicitly evaluate TWO separate properties:
-  (a) collision/aliasing risk: whether unrelated instances can map to the same key, and
-  (b) sharing/cardinality risk: whether behaviorally related instances share enough history, or whether the key is so instance-specific that most entries are one-off and cannot accumulate useful evidence before later decisions.
-  Do not stop after finding narrowing/truncation/collision behavior; also prove or reject whether the active key is too specific to generalize history.
-- For any delayed side effect where a flag/latch/recovery marker is set in one code path and consumed later, prove that the later consumer still corresponds to the original event and that stale or wrong-provenance state cannot be consumed after recovery.
-- Do not normalize an active-path data-representation or state-provenance defect into "missing support for an alternative design" merely because that alternative would be a plausible fix. Keep the active defect and inactive/future capability separate.
-- Report an overflow / out-of-range-state bug only if you prove a reachable active path from valid initialized state to the illegal value. If the code structure prevents that transition under the supplied active paths, reject the finding as unproven.
-- For any stale-state, missing-reset, or overwritten-state claim, trace every write to that field on the active path and state the final value at the next function boundary or next read. If a suspicious write is overwritten before any later read can observe it, reject it as a non-causal dead write rather than reporting it as a functional bug.
+Component-specific source/config interpretation:
+- Use the supplied function descriptions, mapped source/config context, and additional mapped context to identify relevant active code paths.
+- When component-specific mappings or semantics are supplied, use them only to interpret the supplied artifacts.
+- Every reported issue must still be proved from source/config/counter evidence; do not infer a defect from mapped context alone.
+- If a suspected issue depends on a component-specific semantic relationship that is not supplied or provable from code/config/counters, reject it as unproven.
 
 Priority on bug normalization:
 - Prefer the most fundamental guaranteed defect over a downstream restatement of the same problem.
